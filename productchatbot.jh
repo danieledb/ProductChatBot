@@ -1,0 +1,80 @@
+
+
+entity Catalogue {
+	name String required
+}
+
+entity Product {
+	name String required
+	price Double required
+}
+
+enum TYPE {
+    INT, LONG, FLOAT, DOUBLE, STRING, DATE
+}
+entity Attribute {
+	name String required
+    kind TYPE required
+    value String
+}
+
+entity Location {
+	streetAddress String required,
+	postalCode String required,
+	city String,
+	stateProvince String
+}
+
+
+/**
+ * The Customer entity.
+ */
+entity Customer {
+	firstName String,
+	lastName String,
+	email String,
+	phoneNumber String
+}
+
+entity OrderElement {
+	quantity Int,
+}
+
+entity Order {
+	timestamp Instant,
+	confirmed Boolean,
+	delivered Boolean,
+	priceTotal Double
+}
+
+enum Language {
+    ITALIAN, ENGLISH
+}
+
+relationship OneToMany {
+	Attribute{product} to Product{attributes},
+    OrderElement{product} to Product{orderElements},
+    OrderElement{order} to Order{elements}
+    Order{customer} to Customer{orders},
+    Location{customer} to Customer{locations},
+    Order{deliveryTo} to Location{orders}
+}
+
+//relationship OneToOne {}
+
+relationship ManyToMany{
+	Product{catalogues} to Catalogue{products}
+}
+
+
+
+// Set pagination options
+paginate Catalogue, Product, Customer, Order, Location with infinite-scroll
+//paginate Job with pagination
+
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl //except Employee, Job
+// Set an angular suffix
+angularSuffix * with mySuffix
